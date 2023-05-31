@@ -7,8 +7,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class CreateAccount {
+    @Getter
     @Setter
-    public static class Request{
+    public static class Request {
         @NotNull
         @Min(1)
         private Long userId;
@@ -25,9 +26,17 @@ public class CreateAccount {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Response{
+    public static class Response {
         private Long userId;
         private String accountNumber;
         private LocalDateTime resisteredAt;
+
+        public static Response from(AccountDto accountDto){
+            return Response.builder()
+                    .userId(accountDto.getUserId())
+                    .accountNumber(accountDto.getAccountNumber())
+                    .resisteredAt(accountDto.getRegisteredAt())
+                    .build();
+        }
     }
 }
