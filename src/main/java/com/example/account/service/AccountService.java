@@ -30,17 +30,15 @@ public class AccountService {
                 .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
                 .orElse("1000000000");
 
-        Account account = accountRepository.save(
-                Account.builder()
+
+        return AccountDto.fromEntity(
+                accountRepository.save(Account.builder()
                         .accountUser(accountUser)
                         .accountStatus(AccountStatus.IN_USE)
                         .accountNumber(newAccountNumber)
                         .balance(initialBalance)
                         .registeredAt(LocalDateTime.now())
-                        .build());
-
-
-        return AccountDto.fromEntity(account);
+                        .build()));
     }
 
     @Transactional
