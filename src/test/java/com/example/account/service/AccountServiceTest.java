@@ -1,6 +1,9 @@
 package com.example.account.service;
 
 import com.example.account.domain.Account;
+import com.example.account.domain.AccountUser;
+import com.example.account.dto.AccountDto;
+import com.example.account.repository.AccountUserRepository;
 import com.example.account.type.AccountStatus;
 import com.example.account.repository.AccountRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +28,12 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private AccountUserRepository accountUserRepository;
+
     @InjectMocks
     private AccountService accountService;
+
 
     @Test
     @DisplayName("계좌 조회 성공")
@@ -93,5 +100,31 @@ class AccountServiceTest {
         //then
         assertEquals("65789", account.getAccountNumber());
         assertEquals(AccountStatus.UNREGISTERED, account.getAccountStatus());
+    }
+
+    @Test
+    void createAccountSuccess() {
+        //given
+        AccountUser user = AccountUser.builder().id(12L).name("Pobi").build();
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(user));
+
+        given(accountRepository.findFirstByOrderByIdDesc())
+                .willReturn(Optional.of(Account.builder()
+                        .accountUser(user)
+                        .accountNumber("1000000012").build()));
+        given(accountRepository.save(any()))
+                .willReturn(Account.builder()
+                        .accountUser(user)
+                        .accountNumber("1000000013").build());
+        //when
+        AccountDto accountDto = accountService.createAccount(1L, 1000L);
+
+        ArgumentCaptor<Account> captor = ArgumentCaptor.forClass(Account.class);
+        //then
+        verify(accountRepository, times(1)).save(captor.capture());
+        assertEquals(12L, accountDto.getUserId());
+        assertEquals("1000000013", accountDto.getAccountNumber());
+
     }
 }
