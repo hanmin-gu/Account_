@@ -48,4 +48,13 @@ public class AccountService {
         }
         return accountRepository.findById(id).get();
     }
+
+    @Transactional
+    public AccountDto deleteAccount(Long userId, String accountNumber) {
+        AccountUser accountUser = accountUserRepository
+                .findById(userId).orElseThrow(() -> new accountException(ErrorCode.USER_NOT_FOUND));
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(()-> new accountException(ErrorCode.USER_NOT_FOUND));
+        validateDeleteAccount(Acc)
+    }
 }
