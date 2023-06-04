@@ -55,6 +55,23 @@ public class AccountService {
                 .findById(userId).orElseThrow(() -> new accountException(ErrorCode.USER_NOT_FOUND));
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(()-> new accountException(ErrorCode.USER_NOT_FOUND));
-        validateDeleteAccount(Acc)
+        validateDeleteAccount(accountUser, account);
+
+        account.setAccountStatus(AccountStatus.UNREGISTERED);
+        account.setUnRegisteredAt(LocalDateTime.now());
+        return AccountDto.fromEntity(account);
+
+    }
+    private void validateDeleteAccount(AccountUser accountUser, Account account){
+        if(accountUser.getId() != account.getAccountUser().getId()) {
+            throw new accountException(ErrorCode.USER_ACCOUNT_UNMATCH);
+        }
+
+        if(account.getAccountStatus() == AccountStatus.UNREGISTERED){
+            throw new accountException(ErrorCode.ACCOUNT_ALREADY_UNREGISTERED);
+        }
+        if(account.getBalance() > 0){
+            throw new accountException(ErrorCode.BALANCE_NOT_EMPTY);
+        }
     }
 }
