@@ -32,13 +32,13 @@ public class DeleteAccount {
     public static class Response {
         private Long userId;
         private String accountNumber;
-        private LocalDateTime resisteredAt;
+        private LocalDateTime unResisteredAt;
 
         public static Response from(AccountDto accountDto){
             return Response.builder()
                     .userId(accountDto.getUserId())
                     .accountNumber(accountDto.getAccountNumber())
-                    .resisteredAt(accountDto.getRegisteredAt())
+                    .unResisteredAt(accountDto.getRegisteredAt())
                     .build();
         }
     }
