@@ -54,12 +54,13 @@ public class AccountService {
         AccountUser accountUser = accountUserRepository
                 .findById(userId).orElseThrow(() -> new accountException(ErrorCode.USER_NOT_FOUND));
         Account account = accountRepository.findByAccountNumber(accountNumber)
-                .orElseThrow(()-> new accountException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(()-> new accountException(ErrorCode.ACCOUNT_NOT_FOUND));
 
         validateDeleteAccount(accountUser, account);
 
         account.setAccountStatus(AccountStatus.UNREGISTERED);
         account.setUnRegisteredAt(LocalDateTime.now());
+        accountRepository.save(account);
         return AccountDto.fromEntity(account);
 
     }
